@@ -2,6 +2,9 @@ import { Router } from "express";
 import { body, param } from "express-validator";
 import { ProjectController } from "../controllers/ProjectController";
 import { handleInputErrors } from "../middleware/validation";
+import { TaskController } from "../controllers/TaskController";
+import { validateProjectExists } from "../middleware/project";
+import { validateTaskExistsAndBelongsToProject } from "../middleware/task";
 
 const router = Router();
 
@@ -52,4 +55,67 @@ router.delete(
 	ProjectController.deleteProject
 );
 
+/* Routes para las tareas */
+router.param("projectId", validateProjectExists); // Middleware que valida si el proyecto existe y se asegura que exista antes de continuar
+router.param("taskId", validateTaskExistsAndBelongsToProject); // Middleware que valida si la tarea existe y se asegura que exista antes de continuar
+// Crear una tarea
+router.post(
+	"/:projectId/tasks",
+	body("taskName")
+		.notEmpty()
+		.withMessage("El nombre de la tarea es obligatorio"),
+	body("description")
+		.notEmpty()
+		.withMessage("La descripcion de la tarea es obligatoria"),
+	handleInputErrors,
+	TaskController.createTask
+);
+
+// Obtener todas las tareas de un proyecto
+router.get("/:projectId/tasks", TaskController.getProjectTasks);
+
+// Obtener una tarea por id
+router.get(
+	"/:projectId/tasks/:taskId",
+	param("taskId").isMongoId().withMessage("El id no es valido"),
+	handleInputErrors,
+	TaskController.getTaskById
+);
+
+//  Actualizar una tarea
+
+router.put(
+	"/:projectId/tasks/:taskId",
+	param("taskId").isMongoId().withMessage("El id no es valido"),
+	body("taskName")
+		.notEmpty()
+		.withMessage("El nombre de la tarea es obligatorio"),
+	body("description")
+		.notEmpty()
+		.withMessage("La descripcion de la tarea es obligatoria"),
+	handleInputErrors,
+	TaskController.updateTask
+);
+
+// Eliminar una tarea
+
+router.delete(
+	"/:projectId/tasks/:taskId",
+	param("taskId").isMongoId().withMessage("El id no es valido"),
+	handleInputErrors,
+	TaskController.deleteTask
+);
+
+// Actualizar el estado de una tarea
+
+router.post(
+	"/:projectId/tasks/:taskId/status",
+	param("taskId").isMongoId().withMessage("El id no es valido"),
+	body("status")
+		.notEmpty()
+		.isIn(["PENDING", "ON_HOLD", "IN_PROGRESS", "UNDER_REVIEW", "COMPLETED"])
+		.withMessage("El estado no es valido"),
+	handleInputErrors,
+	TaskController.updateTaskStatus
+);
 export default router;
