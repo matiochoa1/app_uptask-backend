@@ -8,7 +8,7 @@ export class ProjectController {
 
 		try {
 			await project.save(); // Guardamos el proyecto en la base de datos
-			res.send("Proyecto creado");
+			res.send("Proyecto Creado Correctamente");
 		} catch (error) {
 			console.log(error);
 		}
@@ -31,7 +31,7 @@ export class ProjectController {
 				.select("-__v");
 
 			if (!project) {
-				const error = new Error("Proyecto no encontrado");
+				const error = new Error("Proyecto No Encontrado");
 				res.status(404).json({ error: error.message });
 			}
 
@@ -49,7 +49,7 @@ export class ProjectController {
 			const project = await Project.findById(id);
 
 			if (!project) {
-				const error = new Error("Proyecto no encontrado");
+				const error = new Error("Proyecto No Encontrado");
 				res.status(404).json({ error: error.message });
 			}
 
@@ -73,7 +73,7 @@ export class ProjectController {
 			const project = await Project.findByIdAndDelete(id);
 
 			if (!project) {
-				const error = new Error("Proyecto no encontrado");
+				const error = new Error("Proyecto No Encontrado");
 				res.status(404).json({ error: error.message });
 			}
 
