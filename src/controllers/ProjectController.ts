@@ -61,7 +61,7 @@ export class ProjectController {
 
 			await project.save();
 
-			res.send("Proyecto actualizado");
+			res.send("Proyecto Actualizado Correctamente");
 		} catch (error) {
 			console.log(error);
 		}
