@@ -51,7 +51,7 @@ export class TaskController {
 
 			await task.save();
 
-			res.send(`Tarea actualizada correctamente: ${task}`);
+			res.send("Tarea actualizada correctamente");
 		} catch (error) {
 			res.status(500).json({ message: "Hubo un error al actualizar la tarea" });
 		}
