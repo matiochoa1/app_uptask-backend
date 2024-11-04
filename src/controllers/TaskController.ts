@@ -85,7 +85,7 @@ export class TaskController {
 			task.status = req.body.status;
 
 			await task.save();
-			res.send(`El nuevo estado es: ${task.status}`);
+			res.send(`Estado actualizado correctamente`);
 		} catch (error) {
 			res
 				.status(500)
