@@ -4,6 +4,7 @@ import cors from "cors";
 import morgan from "morgan";
 import { corsConfig } from "./config/cors";
 import { connectDB } from "./config/db";
+import authRoutes from "./routes/authRoutes";
 import projectRoutes from "./routes/projectRoutes";
 
 dotenv.config(); // cargar las variables de entorno
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use(express.json()); // de esta manera podemos enviar datos en formato json
 
 // Routes - Registramos las rutas
+app.use("/api/auth", authRoutes);
 app.use("/api/projects", projectRoutes);
 
 export default app;
