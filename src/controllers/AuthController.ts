@@ -173,4 +173,42 @@ export class AuthController {
 			res.status(500).json({ error: "Hubo un error" });
 		}
 	};
+
+	static validateToken = async (req: Request, res: Response) => {
+		try {
+			const { token } = req.body;
+			const tokenExists = await Token.findOne({ token });
+
+			if (!tokenExists) {
+				const error = new Error("El token no es valido");
+				res.status(403).json({ error: error.message }); // 403 es un error de acceso denegado
+			}
+
+			res.send("Token valido, define tu nueva contraseña");
+		} catch (error) {
+			res.status(500).json({ error: "Hubo un error" });
+		}
+	};
+
+	static updatePasswordWithToken = async (req: Request, res: Response) => {
+		try {
+			const { token } = req.params;
+			const { password } = req.body;
+			const tokenExists = await Token.findOne({ token });
+
+			if (!tokenExists) {
+				const error = new Error("El token no es valido");
+				res.status(403).json({ error: error.message }); // 403 es un error de acceso denegado
+			}
+
+			const user = await User.findById(tokenExists.user);
+			user.password = await hashPassword(password);
+
+			await Promise.allSettled([user.save(), tokenExists.deleteOne()]);
+
+			res.send("La contraseña se actualizo correctamente");
+		} catch (error) {
+			res.status(500).json({ error: "Hubo un error" });
+		}
+	};
 }
