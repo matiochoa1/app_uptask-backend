@@ -6,6 +6,9 @@ export class ProjectController {
 	static createProject = async (req: Request, res: Response) => {
 		const project = new Project(req.body);
 
+		// asigna un manager
+		project.manager = req.user.id;
+
 		try {
 			await project.save(); // Guardamos el proyecto en la base de datos
 			res.send("Proyecto Creado Correctamente");

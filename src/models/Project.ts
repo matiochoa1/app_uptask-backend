@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { Schema, Document, PopulatedDoc, Types } from "mongoose"; // Definimos el tipo de datos de la colección y el tipo de datos de los campos
 import { ITask } from "./Task";
+import { IUser } from "./User";
 
 export interface IProject extends Document {
 	// hereda todo el tipado de Document y ademas pertenece al tipado de typescript
@@ -8,6 +9,7 @@ export interface IProject extends Document {
 	clientName: string;
 	projectDescription: string;
 	tasks: PopulatedDoc<ITask & Document>[]; // Array de tareas - Tipado de mongoose - relacion a la colección de tareas
+	manager: PopulatedDoc<IUser & Document>;
 }
 
 // Definimos el esquema de la colección - Esto es de mongoose
@@ -34,6 +36,10 @@ const ProjectSchema: Schema = new Schema(
 				ref: "Task", // Referencia a la colección de tareas en MongoDB - relacion al modelo
 			},
 		],
+		manager: {
+			type: Types.ObjectId,
+			ref: "User",
+		},
 	},
 	{ timestamps: true }
 ); // registra el tiempo de creacion y actualizacion
