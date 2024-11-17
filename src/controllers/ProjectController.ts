@@ -19,7 +19,10 @@ export class ProjectController {
 
 	static getAllProjects = async (req: Request, res: Response) => {
 		try {
-			const projects = await Project.find(); // Buscamos todos los proyectos o registros
+			const projects = await Project.find({
+				$or: [{ manager: { $in: req.user.id } }], // esto permite que solo se muestren los proyectos del usuario que esta logueado
+			}); // Buscamos todos los proyectos o registros
+
 			res.json(projects);
 		} catch (error) {
 			console.log(error);
@@ -38,6 +41,11 @@ export class ProjectController {
 				res.status(404).json({ error: error.message });
 			}
 
+			if (project.manager.toString() !== req.user.id.toString()) {
+				const error = new Error("Acceso Denegado");
+				res.status(401).json({ error: error.message });
+			} // esto es para que solo el manager del proyecto pueda verlo
+
 			res.json(project);
 		} catch (error) {
 			console.log(error);
@@ -55,6 +63,13 @@ export class ProjectController {
 				const error = new Error("Proyecto No Encontrado");
 				res.status(404).json({ error: error.message });
 			}
+
+			if (project.manager.toString() !== req.user.id.toString()) {
+				const error = new Error(
+					"Solo el manager del proyecto puede actualizarlo"
+				);
+				res.status(401).json({ error: error.message });
+			} // esto es para que solo el manager del proyecto pueda verlo
 
 			project.projectName = projectName;
 			project.clientName = clientName;
@@ -79,6 +94,13 @@ export class ProjectController {
 				const error = new Error("Proyecto No Encontrado");
 				res.status(404).json({ error: error.message });
 			}
+
+			if (project.manager.toString() !== req.user.id.toString()) {
+				const error = new Error(
+					"Solo el manager del proyecto puede eliminar el proyecto"
+				);
+				res.status(401).json({ error: error.message });
+			} // esto es para que solo el manager del proyecto pueda verlo
 
 			res.send(`Proyecto: ${id} ha sido eliminado`);
 		} catch (error) {
