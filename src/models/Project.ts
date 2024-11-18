@@ -10,6 +10,7 @@ export interface IProject extends Document {
 	projectDescription: string;
 	tasks: PopulatedDoc<ITask & Document>[]; // Array de tareas - Tipado de mongoose - relacion a la colección de tareas
 	manager: PopulatedDoc<IUser & Document>;
+	team: PopulatedDoc<IUser & Document>[];
 }
 
 // Definimos el esquema de la colección - Esto es de mongoose
@@ -40,6 +41,12 @@ const ProjectSchema: Schema = new Schema(
 			type: Types.ObjectId,
 			ref: "User",
 		},
+		team: [
+			{
+				type: Types.ObjectId,
+				ref: "User",
+			},
+		],
 	},
 	{ timestamps: true }
 ); // registra el tiempo de creacion y actualizacion
