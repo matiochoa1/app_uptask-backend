@@ -11,7 +11,7 @@ export class TeamMemberController {
 
 		if (!user) {
 			const error = new Error("El usuario no existe");
-			res.status(404).send({ error: error.message });
+			return res.status(404).send({ error: error.message });
 		}
 
 		res.json({ user });
@@ -23,7 +23,7 @@ export class TeamMemberController {
 			select: "id email name",
 		});
 
-		res.json({ team: project.team });
+		res.json(project.team);
 	};
 
 	static addMemberById = async (req: Request, res: Response) => {
@@ -34,7 +34,7 @@ export class TeamMemberController {
 
 		if (!user) {
 			const error = new Error("El usuario no existe");
-			res.status(404).send({ error: error.message });
+			return res.status(404).send({ error: error.message });
 		}
 
 		if (
@@ -51,16 +51,16 @@ export class TeamMemberController {
 	};
 
 	static removeMemberById = async (req: Request, res: Response) => {
-		const { id } = req.body;
+		const { userId } = req.params;
 
 		// Buscar el usuario en el proyecto
-		if (!req.project.team.some((team) => team.toString() === id)) {
+		if (!req.project.team.some((team) => team.toString() === userId)) {
 			const error = new Error("El usuario no existe en el proyecto");
 			return res.status(409).send({ error: error.message });
 		}
 		// Utilizamos el metodo filter para extraer todos los elementos que no sean iguales al id que se quiere eliminar
 		req.project.team = req.project.team.filter(
-			(teamMember) => teamMember.toString() !== id
+			(teamMember) => teamMember.toString() !== userId
 		);
 
 		await req.project.save();

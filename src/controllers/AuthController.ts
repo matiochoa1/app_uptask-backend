@@ -71,7 +71,7 @@ export class AuthController {
 
 			if (!user) {
 				const error = new Error("El usuario no existe");
-				res.status(404).json({ error: error.message }); // 404 es un error de no encontrado
+				return res.status(404).json({ error: error.message }); // 404 es un error de no encontrado
 			}
 
 			if (!user.confirmed) {
@@ -91,7 +91,7 @@ export class AuthController {
 				const error = new Error(
 					"La cuenta no ha sido confirmada, hemos enviado un nuevo correo de confirmacion"
 				);
-				res.status(401).json({ error: error.message }); // 401 es un error de no autorizado
+				return res.status(401).json({ error: error.message }); // 401 es un error de no autorizado
 			}
 
 			// Revisar password
@@ -99,7 +99,7 @@ export class AuthController {
 
 			if (!passwordMatch) {
 				const error = new Error("El password es incorrecto");
-				res.status(401).json({ error: error.message }); // 401 es un error de no autorizado
+				return res.status(401).json({ error: error.message }); // 401 es un error de no autorizado
 			}
 
 			// Generar el JWT
