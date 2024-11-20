@@ -38,3 +38,16 @@ export async function validateTaskExistsAndBelongsToProject(
 			.json({ error: "Hubo un error en la validación de la tarea" });
 	}
 }
+
+export async function hasAuthorization(
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	if (req.user.id.toString() != req.project.manager.toString()) {
+		const error = new Error("Accion no valida");
+		return res.status(400).json({ error: error.message });
+	}
+
+	next();
+}
