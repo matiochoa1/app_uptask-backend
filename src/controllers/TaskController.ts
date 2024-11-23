@@ -31,7 +31,7 @@ export class TaskController {
 		try {
 			const task = await Task.findById(req.params.taskId)
 				.populate("project")
-				.select("-__v");
+				.populate({ path: "completedBy.user", select: "name email" });
 
 			res.json(task);
 		} catch (error) {
@@ -77,14 +77,17 @@ export class TaskController {
 
 	static updateTaskStatus = async (req: Request, res: Response) => {
 		try {
-			const { taskId } = req.params;
+			const { status } = req.body;
+			req.task.status = status;
 
-			const task = await Task.findById(taskId);
+			const data = {
+				user: req.user.id,
+				status: status,
+			};
 
-			// Actualizamos el estado de la tarea
-			task.status = req.body.status;
+			req.task.completedBy.push(data);
 
-			await task.save();
+			await req.task.save();
 			res.send(`Estado actualizado correctamente`);
 		} catch (error) {
 			res

@@ -15,6 +15,10 @@ export interface ITask extends Document {
 	description: string;
 	project: Types.ObjectId; // Tipado de mongoose
 	status: TaskStatus;
+	completedBy: {
+		user: Types.ObjectId;
+		status: TaskStatus;
+	}[];
 }
 
 export const TaskSchema: Schema = new Schema(
@@ -38,6 +42,20 @@ export const TaskSchema: Schema = new Schema(
 			enum: Object.values(TaskStatus),
 			default: TaskStatus.PENDING,
 		},
+		completedBy: [
+			{
+				user: {
+					type: Types.ObjectId,
+					ref: "User",
+					default: null, // Por defecto no hay usuario que complete la tarea, se puede cambiar a null para indicar que la tarea no ha sido completada aún. Aquí se podría agregar un modelo de usuario en lugar de un ObjectId para una relación más profunda.  // Tipado de mongoose con referencia a un usuario en MongoDB - relacion al modelo de usuario.
+				},
+				status: {
+					type: String,
+					enum: Object.values(TaskStatus),
+					default: TaskStatus.PENDING,
+				},
+			},
+		],
 	},
 	{ timestamps: true }
 ); // registra el tiempo de creacion y actualizacion
