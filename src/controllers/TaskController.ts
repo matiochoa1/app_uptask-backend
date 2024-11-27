@@ -34,7 +34,7 @@ export class TaskController {
 				.populate({ path: "completedBy.user", select: "name email" })
 				.populate({
 					path: "notes",
-					select: "id content",
+					select: "id content createdAt",
 					populate: { path: "createdBy", select: "name email" },
 				});
 
