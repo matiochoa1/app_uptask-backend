@@ -219,4 +219,44 @@ export class AuthController {
 	static getUser = async (req: Request, res: Response) => {
 		res.json(req.user);
 	};
+
+	static updateProfile = async (req: Request, res: Response) => {
+		const { name, email } = req.body;
+
+		const userExists = await User.findOne({ email });
+		if (userExists && userExists.id.toString() !== req.user.id.toString()) {
+			const error = new Error("Ese email ya esta registrado");
+			return res.status(409).json({ error: error.message });
+		}
+
+		req.user.name = name;
+		req.user.email = email;
+
+		try {
+			await req.user.save();
+			res.send("Perfil Actualizado Correctamente!");
+		} catch (error) {
+			res.status(500).json({ error: "Hubo un error" });
+		}
+	};
+
+	static updatePassword = async (req: Request, res: Response) => {
+		const { name, email } = req.body;
+
+		const userExists = await User.findOne({ email });
+		if (userExists && userExists.id.toString() !== req.user.id.toString()) {
+			const error = new Error("Ese email ya esta registrado");
+			return res.status(409).json({ error: error.message });
+		}
+
+		req.user.name = name;
+		req.user.email = email;
+
+		try {
+			await req.user.save();
+			res.send("Perfil Actualizado Correctamente!");
+		} catch (error) {
+			res.status(500).json({ error: "Hubo un error" });
+		}
+	};
 }

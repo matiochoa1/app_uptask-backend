@@ -79,4 +79,21 @@ router.post(
 
 router.get("/user", authenticate, AuthController.getUser);
 
+/* Profile routes */
+router.put(
+	"/profile",
+	authenticate,
+	body("name").notEmpty().withMessage("El nombre es obligatorio"),
+	body("email").isEmail().withMessage("Email no valido"),
+	handleInputErrors,
+	AuthController.updateProfile
+);
+
+router.post(
+	"/update-password",
+	authenticate,
+	handleInputErrors,
+	AuthController.updatePassword
+);
+
 export default router;
