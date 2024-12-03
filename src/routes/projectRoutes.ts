@@ -40,9 +40,12 @@ router.get(
 	ProjectController.getProjectById
 );
 
+/* Routes para las tareas */
+router.param("projectId", validateProjectExists); // Middleware que valida si el proyecto existe y se asegura que exista antes de continuar
+
 router.put(
-	"/:id",
-	param("id").isMongoId().withMessage("El id no es valido"),
+	"/:projectId",
+	param("projectId").isMongoId().withMessage("El id no es valido"),
 	body("projectName")
 		.notEmpty()
 		.withMessage("El nombre del proyecto es obligatorio"),
@@ -53,18 +56,18 @@ router.put(
 		.notEmpty()
 		.withMessage("La descripcion del proyecto es obligatoria"),
 	handleInputErrors,
+	hasAuthorization,
 	ProjectController.updateProject
 );
 
 router.delete(
-	"/:id",
-	param("id").isMongoId().withMessage("ID no valido"),
+	"/:projectId",
+	param("projectId").isMongoId().withMessage("ID no valido"),
 	handleInputErrors,
+	hasAuthorization,
 	ProjectController.deleteProject
 );
 
-/* Routes para las tareas */
-router.param("projectId", validateProjectExists); // Middleware que valida si el proyecto existe y se asegura que exista antes de continuar
 router.param("taskId", validateTaskExistsAndBelongsToProject); // Middleware que valida si la tarea existe y se asegura que exista antes de continuar
 // Crear una tarea
 router.post(
